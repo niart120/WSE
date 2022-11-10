@@ -1,0 +1,2 @@
+# WSE
+ Wordle Solver Evaluator
