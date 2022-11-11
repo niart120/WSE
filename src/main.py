@@ -15,14 +15,13 @@ def main():
     with open("./problems.json",encoding="utf-8") as js:
         problems.extend(json.load(js))
 
-    questions = problems
+    #questions = problems
 
     evaler = Evaluator(set(problems), set(questions))
     solver = EntropySolver(problems, questions)
     
     #evaler.check_solver(solver)
     evaler.evalualte(solver)
-
     
 if __name__ == "__main__":
     main()
