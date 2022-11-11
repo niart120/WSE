@@ -9,9 +9,9 @@ def _show_result(result_dict:Dict)->None:
     print(f"Solver score:{sum(result_dict.values())}")
 
 class Evaluator():
-    def __init__(self, question_space:Set[str], problem_space:Set[str]) -> None:
-        self.questions = set(question_space)
+    def __init__(self, problem_space:Set[str], question_space:Set[str]) -> None:
         self.problems = set(problem_space)
+        self.questions = set(question_space)
 
     def check_solver(self, solver:Solver):
         solver.reset()
