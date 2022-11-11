@@ -24,7 +24,7 @@ def distance(problem, question):
         for j in range(5):
             if i==j:continue
             if a[i]==b[j]:
-                r[i] = 1
+                r[j] = 1
                 a[i] = "_"
                 b[j] = "#"
     
@@ -39,10 +39,10 @@ class EntropySolver(Solver):
         reverse_dict = {}
         subset_dict_list = [{} for _ in range(m)]
 
-        for i in range(n):
+        for i in range(m):
             question = questions[i]
             reverse_dict[question] = i
-            for j in range(m):
+            for j in range(n):
                 problem = problems[j]
                 d = distance(problem,question)
                 if d in subset_dict_list[i]:
@@ -79,7 +79,7 @@ class EntropySolver(Solver):
 
     def get_entropy_byname(self, name):
         id = self.reverse_dict[name]
-        return self.get_entropy(id,eventset)
+        return self.get_entropy(id)
 
     def get_informationcontent(self, id, respond):
         eventset = set(self.candidates)
