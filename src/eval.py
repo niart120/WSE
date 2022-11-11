@@ -7,6 +7,8 @@ from solver import Solver
 def _show_result(result_dict:Dict)->None:
     score = sum(result_dict.values())
     print(f"Solver score:{sum(result_dict.values())}")
+    k,v = max(result_dict.items(),key=lambda x:x[1])
+    print(f"Worst case:{k}({v} steps)")
 
 class Evaluator():
     def __init__(self, problem_space:Set[str], question_space:Set[str]) -> None:
@@ -91,7 +93,7 @@ class Evaluator():
             for j in range(5):
                 if i==j:continue
                 if a[i]==b[j]:
-                    r[i] = 1
+                    r[j] = 1
                     a[i] = "_"
                     b[j] = "#"
         
