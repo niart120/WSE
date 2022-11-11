@@ -7,13 +7,18 @@ def main():
     msg = '###Wordle Evaluator###'
     print(msg)
     
-    names = []
-    with open("./names.json",encoding="utf-8") as js:
-        names.extend(json.load(js))
+    questions = []
+    problems = []
 
+    with open("./questions.json",encoding="utf-8") as js:
+        questions.extend(json.load(js))
+    with open("./problems.json",encoding="utf-8") as js:
+        problems.extend(json.load(js))
 
-    evaler = Evaluator(set(names), set(names))
-    solver = EntropySolver()
+    questions = problems
+
+    evaler = Evaluator(set(problems), set(questions))
+    solver = EntropySolver(problems, questions)
     
     #evaler.check_solver(solver)
     evaler.evalualte(solver)
