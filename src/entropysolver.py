@@ -3,56 +3,52 @@ from solver import Solver
 import json
 import math
 from collections import Counter
+def distance(problem, question):
+    """[summary]
+    Args:
+        problem ([type]): [description]
+        question ([type]): [description]
+    Returns:
+        [type]: [description]
+    """
+
+    a,b = list(problem), list(question)
+    r = [2]*5
+    for i in range(5):
+        if a[i] == b[i]:
+            r[i] = 0
+            a[i] = "_"
+            b[i] = "#"
+    
+    for i in range(5):
+        for j in range(5):
+            if i==j:continue
+            if a[i]==b[j]:
+                r[i] = 1
+                a[i] = "_"
+                b[j] = "#"
+    
+    result = tuple(r)
+    return result
 
 class EntropySolver(Solver):
-
-    def __init__(self):
-        def distance(problem, question):
-            """[summary]
-            Args:
-                problem ([type]): [description]
-                question ([type]): [description]
-            Returns:
-                [type]: [description]
-            """
-
-            a,b = list(question), list(problem)
-            r = [2]*5
-            for i in range(5):
-                if a[i] == b[i]:
-                    r[i] = 0
-                    a[i] = "_"
-                    b[i] = "#"
-            
-            for i in range(5):
-                for j in range(5):
-                    if i==j:continue
-                    if a[i]==b[j]:
-                        r[i] = 1
-                        a[i] = "_"
-                        b[j] = "#"
-            
-            result = tuple(r)
-            return result
-
-        names = []
-        with open("./names.json",encoding="utf-8") as js:
-            names.extend(json.load(js))
-        n = len(names)
+    def __init__(self, problems, questions):
+        n = len(problems)
+        m = len(questions)
 
         reverse_dict = {}
-        subset_dict_list = [{} for _ in range(n)]
+        subset_dict_list = [{} for _ in range(m)]
 
         for i in range(n):
-            problem = names[i]
-            reverse_dict[names[i]] = i
-            for j in range(n):
-                question = names[j]
-                d = distance(question,problem)
-                if d in subset_dict_list[j]:
-                    subset_dict_list[j][d].append(i)
+            question = questions[i]
+            reverse_dict[question] = i
+            for j in range(m):
+                problem = problems[j]
+                d = distance(problem,question)
+                if d in subset_dict_list[i]:
+                    subset_dict_list[i][d].append(j)
                 else:
-                    subset_dict_list[j][d] = [i]
+                    subset_dict_list[i][d] = [j]
         
         for subset_dict in subset_dict_list:
             for k,v in subset_dict.items():
@@ -60,7 +56,8 @@ class EntropySolver(Solver):
 
         self.subset_dict_list = subset_dict_list
         self.n = n
-        self.names = names
+        self.m = m
+        self.questions = questions
         self.reverse_dict = reverse_dict
 
         self.candidates = set(range(n))
@@ -80,7 +77,7 @@ class EntropySolver(Solver):
         entropy = -entropy
         return entropy
 
-    def get_entropy_byname(self, name, eventset = None):
+    def get_entropy_byname(self, name):
         id = self.reverse_dict[name]
         return self.get_entropy(id,eventset)
 
@@ -109,10 +106,10 @@ class EntropySolver(Solver):
     def question(self) -> str:
         if len(self.candidates)==1:
             i = list(self.candidates)[0]
-            return self.names[i]
+            return self.questions[i]
         lst = []
-        for i in range(self.n):
-            eta = self.get_entropy(i), self.names[i]
+        for i in range(self.m):
+            eta = self.get_entropy(i), self.questions[i]
             lst.append(eta)
         _, query = max(lst)
         return query
@@ -120,6 +117,7 @@ class EntropySolver(Solver):
     def response(self, question:str, r1: int, r2: int, r3: int, r4: int, r5: int) -> None:
         r = (r1, r2, r3, r4, r5)
         self.candidates = self.candidates & self.get_subset_byname(question, r)
+        #print(question, r, len(self.candidates))
         return
 
     def reset(self) -> None:
